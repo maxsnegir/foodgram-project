@@ -1,0 +1,33 @@
+{% load user_filters %}
+<div class="card" data-id="{{ recipe.id }}">
+    <a href="{{ recipe.get_absolute_url }}" class="link" target="_blank"><img
+            src="{{ recipe.image.url }}" alt="Какой-то текст"
+            class="card__image"></a>
+    <div class="card__body">
+        <a class="card__title link" href="{{ recipe.get_absolute_url }}"
+           target="_blank">{{ recipe.name }}</a>
+        <ul class="card__items">
+            {% for tag in recipe.get_tag_list %}
+                <li class="card__item">{{ tag|format_style }}</li>
+            {% endfor %}
+        </ul>
+        <div class="card__items card__items_column">
+            <p class="card__text"><span
+                    class="icon-time"></span> {{ recipe.cook_time }}
+                мин.</p>
+            <p class="card__text"><span class="icon-user"></span>
+                <a href="#"
+                   style="color: black">{{ recipe.author.username }}</a>
+            </p>
+        </div>
+    </div>
+    <div class="card__footer">
+        <button class="button button_style_light-blue"
+                name="purchases" data-out><span
+                class="icon-plus button__icon"></span>Добавить в покупки
+        </button>
+        <button class="button button_style_none" name="favorites"
+                data-out><span class="icon-favorite"></span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load user_filters %}
+{% block title %}Войти на сайт{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="../../static/pages/form.css">
+{% endblock %}
+{% block content %}
+
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">Войти на сайт</h1>
+        </div>
+        <div class="form-container">
+            <form class="form" method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="form__group">
+                        <label for="id_username"
+                               class="form__label">{{ field.label_tag }}</label>
+                        <div class="form__field-group">
+                            {{ field| add_class:"form__input" }}
+                            {% if form.errors and forloop.last %}
+                                <span class="form__error">Имя пользователя и пароль
+                                    не совпадают. Введите правильные данные.</span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="form__footer">
+                    <button class="button button_style_blue">Войти</button>
+                    <a href="{% url 'password_reset' %}"
+                       class="form__forgot-link">Забыли пароль?</a>
+                </div>
+            </form>
+        </div>
+
+
+    </main>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from multiselectfield import MultiSelectField
 
 User = get_user_model()
@@ -23,7 +24,8 @@ class Recipe(models.Model):
     image = models.ImageField('Изображение', upload_to='recipes/%Y/%m/%d/', )
     description = models.TextField('Описание', )
     ingredients = models.ManyToManyField('Ingredient',
-                                         through='IngredientForRecipe',)
+                                         through='IngredientForRecipe',
+                                         )
     tag = MultiSelectField(choices=TAG_CHOICES, max_choices=3,
                            verbose_name='Тег')
     cook_time = models.PositiveIntegerField('Время приготовления', )
@@ -37,9 +39,12 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('recipes:recipe_detail', kwargs={'pk': self.pk})
+
 
 class Ingredient(models.Model):
-    name = models.CharField('Название', max_length=255)
+    name = models.CharField('Название', max_length=255, unique=True)
 
     class Meta:
         verbose_name = 'Ингридиент'
@@ -51,10 +56,11 @@ class Ingredient(models.Model):
 
 
 class IngredientForRecipe(models.Model):
-    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингридиент',
-                                   on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, verbose_name='Рецепт',
-                               on_delete=models.CASCADE)
+                               on_delete=models.CASCADE,
+                               related_name='get_ingredients')
+    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингридиент',
+                                   on_delete=models.CASCADE, )
     count = models.PositiveIntegerField('Количество')
     unit = models.CharField('Еденица измерения', max_length=10)
 
