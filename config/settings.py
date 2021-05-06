@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'multiselectfield',
+    'rest_framework',
 
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
