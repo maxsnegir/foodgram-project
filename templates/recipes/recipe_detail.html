@@ -47,7 +47,8 @@
                         </li>
                         {% if user == recipe.author %}
                             <li class="single-card__item"><a
-                                    style="margin-left: 2.5em" href="#"
+                                    style="margin-left: 2.5em"
+                                    href="{% url 'recipes:update-recipe' recipe.id %}"
                                     class="single-card__text">Редактировать
                                 рецепт</a></li>
                         {% endif %}
@@ -71,8 +72,8 @@
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">
                         {% for ingredient in recipe.get_ingredients.all %}
-                            <p class=" single-card__section-item">{{ ingredient.ingredient.name }}
-                                - {{ ingredient.count }} {{ ingredient.unit }}</p>
+                            <p class=" single-card__section-item">{{ ingredient.ingredient.title }}
+                                - {{ ingredient.count }} {{ ingredient.ingredient.dimension }}</p>
                         {% endfor %}
                     </div>
                 </div>

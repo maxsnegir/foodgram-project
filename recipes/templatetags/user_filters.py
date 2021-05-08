@@ -19,3 +19,24 @@ def format_style(tag):
 @register.filter
 def add_class(field, css):
     return field.as_widget(attrs={'class': css, })
+
+
+@register.filter
+def tag_format_class(tag):
+    value = tag.data.get('value')
+    selected = tag.data.get('selected')
+
+    if value == 'BF':
+        attrs = {'id': 'id_breakfast',
+                 'class': 'tags__checkbox tags__checkbox_style_orange',
+                 'checked': selected}
+    elif value == 'LH':
+        attrs = {'id': 'id_lunch',
+                 'class': 'tags__checkbox tags__checkbox_style_green',
+                 'checked': selected}
+    else:
+        attrs = {'id': 'id_dinner',
+                 'class': 'tags__checkbox tags__checkbox_style_purple',
+                 'checked': selected}
+    tag.data['attrs'] = attrs
+    return tag

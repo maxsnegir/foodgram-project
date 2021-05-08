@@ -20,7 +20,6 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes', verbose_name='Автор', )
     name = models.CharField('Название', max_length=255)
-    # slug = models.SlugField('Слаг', unique=True)
     image = models.ImageField('Изображение', upload_to='recipes/%Y/%m/%d/', )
     description = models.TextField('Описание', )
     ingredients = models.ManyToManyField('Ingredient',
@@ -44,33 +43,35 @@ class Recipe(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField('Название', max_length=255, unique=True)
+    title = models.CharField('Название', max_length=255, unique=True)
+    dimension = models.CharField('Еденица измерения', max_length=20,
+                                 default='шт.')
+    draft = models.BooleanField('Черновик', default=True)
 
     class Meta:
-        verbose_name = 'Ингридиент'
-        verbose_name_plural = 'Ингридиенты'
-        ordering = ('name',)
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиент'
+        ordering = ('title',)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class IngredientForRecipe(models.Model):
     recipe = models.ForeignKey(Recipe, verbose_name='Рецепт',
                                on_delete=models.CASCADE,
                                related_name='get_ingredients')
-    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингридиент',
+    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE, )
     count = models.PositiveIntegerField('Количество')
-    unit = models.CharField('Еденица измерения', max_length=10)
 
     class Meta:
-        verbose_name = 'Ингридиент для рецетов'
-        verbose_name_plural = 'Ингридиенты для рецетов'
+        verbose_name = 'Ингредиент для рецетов'
+        verbose_name_plural = 'Ингредиенты для рецетов'
         constraints = [
             models.UniqueConstraint(fields=['ingredient', 'recipe'],
                                     name='unique_ingredient'),
         ]
 
     def __str__(self):
-        return f"{self.recipe.name} {self.ingredient.name}"
+        return f"{self.recipe.name} {self.ingredient.title}"

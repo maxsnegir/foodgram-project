@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'multiselectfield',
     'rest_framework',
+    'django_filters',
 
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',

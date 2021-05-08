@@ -2,7 +2,11 @@ from django.contrib import admin
 
 from recipes.models import Recipe, Ingredient, IngredientForRecipe
 
-admin.site.register(Ingredient)
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'dimension', 'draft']
+    list_editable = ['draft']
 
 
 class IngredientInline(admin.TabularInline):
@@ -12,7 +16,7 @@ class IngredientInline(admin.TabularInline):
 
 @admin.register(IngredientForRecipe)
 class IngredientForRecipeAdmin(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'count', 'unit',)
+    list_display = ('id','recipe', 'ingredient', 'count')
     list_display_links = ('recipe', 'ingredient')
     search_fields = ('recipe__name', 'ingredient__name')
 
@@ -21,7 +25,6 @@ class IngredientForRecipeAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'author',)
     list_display_links = ('pk', 'name', 'author',)
-    # prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name', 'author__username']
     list_filter = ('tag',)
     inlines = [IngredientInline, ]
