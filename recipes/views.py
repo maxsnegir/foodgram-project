@@ -13,6 +13,7 @@ class RecipeList(generic.ListView):
     queryset = Recipe.objects.select_related('author').all()
     template_name = 'recipes/index.html'
     context_object_name = 'recipes'
+    paginate_by = 9
 
 
 class RecipeDetail(generic.DetailView):
