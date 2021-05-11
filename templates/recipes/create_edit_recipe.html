@@ -36,11 +36,10 @@
                     <p class="form__label">Теги</p>
                     <div class="form__field-group">
                         <div class="tags">
+
                             {% for tag in form.tag %}
                                 <div class="tags__item">
-                                    <label for="id_breakfast"
-                                           class="tags__label">
-                                        {{ tag|tag_format_class }}</label>
+                                    <label class="tags__label">{{ tag|tag_format_class }}</label>
                                 </div>
                             {% endfor %}
                         </div>
@@ -91,7 +90,7 @@
                             {% endif %}
                         </div>
                         <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                        <span class="form__error">{{ form.ingredients.errors }}</span>
+                        <span class="form__error">{{ form.non_field_errors }}</span>
                     </div>
                 </div>
                 <div class="form__group">
@@ -119,7 +118,12 @@
                     </div>
                 </div>
                 <div class="form__footer">
-                    <button class="button button_style_blue">Сохранить</button>
+                    <button class="button button_style_blue"
+                     {% if not edit %}
+                         name="action"
+                         value="EDIT"
+                     {% endif %}>
+                        Сохранить</button>
                     {% if edit %}
                         <a style="margin-left: 2.5em"
                            href="{% url 'recipes:recipe_delete' recipe.id %}"

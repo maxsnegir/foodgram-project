@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load user_filters %}
-
+{% load static %}
 {% block title %}Рецепты{% endblock %}
 
 {% block css %}
@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block content %}
-
+    {% csrf_token %}
     <main class="main container">
         <div class="main__header">
-            <h1 class="main__title">Рецепты</h1>
+            <h1 class="main__title">{{ user.username }}</h1>
             <ul class="tags">
                 <li class="tags__item">
                     <a id="breakfast"
@@ -31,29 +31,47 @@
                        href="#"></a>
                     <label for="dinner" class="tags__label">Ужин</label>
                 </li>
-
             </ul>
         </div>
+
+        <div class="author-subscribe" data-author="{{ user.id }}">
+            <p style="padding: 0 0 2em 0;">
+                {% if request.user|is_follow:user %}
+                    <button class="button button_style_light-blue button_size_auto"
+                            name="subscribe">Отписаться от автора
+                    </button>
+
+                {% else %}
+                    <button class="button button_style_light-blue button_size_auto"
+                            name="subscribe" data-out>Подписаться на автора
+                    </button>
+                {% endif %}
+            </p>
+        </div>
+
         <div class="card-list">
             {% for recipe in recipes %}
                 {% include 'recipes/recipe.html' %}
             {% endfor %}
+
         </div>
         {% include 'pagination.html' %}
     </main>
 {% endblock %}
 
-
 {% block js %}
-    <script src="../../static/js/components/MainCards.js"></script>
 
-    <script src="../../static/js/components/Purchases.js"></script>
-    <script src="../../static/js/components/Favorites.js"></script>
+  <script src="../../static/js/components/MainCards.js"></script>
 
-    <script src="../../static/js/config/config.js"></script>
-    <script src="../../static/js/components/CardList.js"></script>
-    <script src="../../static/js/components/Header.js"></script>
+  <script src="../../static/js/components/Purchases.js"></script>
+  <script src="../../static/js/components/Favorites.js"></script>
+  <script src="../../static/js/components/Subscribe.js"></script>
 
-    <script src="../../static/js/api/Api.js"></script>
-    <script src="../../static/js/indexAuth.js"></script>
+  <script src="../../static/js/config/config.js"></script>
+  <script src="../../static/js/components/AuthorRecipe.js"></script>
+  <script src="../../static/js/components/Header.js"></script>
+
+  <script src="../../static/js/api/Api.js"></script>
+  <script src="../../static/js/authorRecipe.js"></script>
+
 {% endblock %}

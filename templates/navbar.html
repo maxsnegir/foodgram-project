@@ -6,14 +6,25 @@
                         href="{% url "recipes:recipes" %}"
                         class="nav__link link">Рецепты</a>
                 </li>
-                <li class="nav__item"><a href="#" class="nav__link link">Мои
-                    подписки</a></li>
-                <li class="nav__item"><a href="{% url 'recipes:create-recipe' %}" class="nav__link link">Создать
-                    рецепт</a></li>
-                <li class="nav__item"><a href="#" class="nav__link link">Избранное</a>
+                <li class="nav__item">
+                    <a href="{% url 'recipes:subscriptions' %}"
+                       class="nav__link link">Мои подписки
+                    </a>
                 </li>
-                <li class="nav__item"><a href="#" class="nav__link link">Список
-                    покупок</a> <span class="badge badge_style_blue nav__badge"
+                <li class="nav__item">
+                    <a href="{% url 'recipes:create-recipe' %}"
+                       class="nav__link link">Создать рецепт
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link link">
+                        Избранное
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link link">Список
+                    покупок</a>
+                    <span class="badge badge_style_blue nav__badge"
                                       id="counter">4</span></li>
 
             </ul>

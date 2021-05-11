@@ -6,17 +6,21 @@ from multiselectfield import MultiSelectField
 User = get_user_model()
 
 
+class Tag(models.Model):
+    name = models.CharField('Название тега', max_length=100, unique=True)
+    slug = models.SlugField('Слаг', max_length=100, unique=True)
+    style = models.CharField('Текст CSS стиля', max_length=255)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
+
+
 class Recipe(models.Model):
-    BREAKFAST = 'Завтрак'
-    LUNCH = 'Обед'
-    DINNER = 'Ужин'
-
-    TAG_CHOICES = (
-        ('BF', BREAKFAST),
-        ('LH', LUNCH),
-        ('DR', DINNER)
-    )
-
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes', verbose_name='Автор', )
     name = models.CharField('Название', max_length=255)
@@ -25,8 +29,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField('Ingredient',
                                          through='IngredientForRecipe',
                                          )
-    tag = MultiSelectField(choices=TAG_CHOICES, max_choices=3,
-                           verbose_name='Тег')
+    tag = models.ManyToManyField(Tag, verbose_name='Тег')
     cook_time = models.PositiveIntegerField('Время приготовления', )
     created = models.DateTimeField('Дата добавления', auto_now_add=True)
 

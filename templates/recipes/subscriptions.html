@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load user_filters %}
+{% load static %}
+{% block title %}Мои подписки{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="../../static/pages/myFollow.css">
+    {#    <link rel="stylesheet" href="../../static/pages/index.css">#}
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">Мои подписки</h1>
+        </div>
+        <div class="card-list">
+
+            {% for subscription in subscriptions %}
+
+                <div class="card-user"
+                     data-author="{{ subscription.author.id }}">
+                    <div class="card-user__header">
+                        <h2 class="card-user__title">{{ subscription.author.username }}</h2>
+                    </div>
+
+                    <div class="card-user__body">
+                        <ul class="card-user__items">
+                            {% for recipe in subscription.author.recipes.all %}
+                                {% if forloop.counter < 4 %}
+                                    <li class="card-user__item">
+                                        <div class="recipe">
+                                            <a href="{{ recipe.get_absolute_url }}"
+                                               class="link" target="_blank">
+                                                <img src="{{ recipe.image.url }}"
+                                                     alt="какой-то-текст"
+                                                     class="recipe__image">
+                                            </a>
+                                            <h3 class="recipe__title">
+                                                {{ recipe.name }}
+                                            </h3>
+                                            <p class="recipe__text"><span
+                                                    class="icon-time"></span>
+                                                {{ recipe.cook_time }} мин.
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                {% if forloop.last %}
+                                    {% with subscription.author.recipes.count as count %}
+                                        {% if count|add:-3 > 0 %}
+                                            <li class="card-user__item">
+                                                <a href="{% url 'recipes:user_recipes' recipe.author %}"
+                                                   class="card-user__link link">Еще
+                                                    {{ count|add:-3 }}
+                                                    рецептов...</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% empty %}
+                                <h3 class="recipe__title">Рецептов нет</h3>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-user__footer">
+                        <button class="button button_style_light-blue button_size_auto"
+                                name="subscribe">Отписаться
+                        </button>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+        {% include 'pagination.html' %}
+    </main>
+{% endblock %}
+
+
+{% block js %}
+    <script src="../../static/js/config/config.js"></script>
+    <script src="../../static/js/components/MainCards.js"></script>
+    <script src="../../static/js/components/MyFollow.js"></script>
+    <script src="../../static/js/components/Subscribe.js"></script>
+    <script src="../../static/js/components/Header.js"></script>
+    <script src="../../static/js/api/Api.js"></script>
+    <script src="../../static/js/myFollow.js"></script>
+{% endblock %}
+
+
+

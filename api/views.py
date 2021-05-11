@@ -1,16 +1,46 @@
-from rest_framework.generics import ListAPIView
-from rest_framework import viewsets
+from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+from recipes.models import Ingredient
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django_filters import rest_framework as filters
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from api.filters import IngredientFilter
 from api.serializers import IngredientSerializer
-from recipes.models import Ingredient
+from users.models import Follow
+
+User = get_user_model()
 
 
-class IngredientListView(ListAPIView, viewsets.GenericViewSet):
+class IngredientListView(generics.ListAPIView, viewsets.ViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.filter(draft=False)
     http_method_names = ['get', ]
     permission_classes = [IsAuthenticated, ]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = IngredientFilter
+
+
+class SubscriptionView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def get_object(self):
+        author_id = self.kwargs.get('pk')
+        return Follow.objects.filter(user=self.request.user, author=author_id)
+
+    def delete(self, request, *args, **kwargs):
+        response = {'success': False}
+        relation = self.get_object()
+        if relation:
+            relation.delete()
+            response['success'] = True
+        return Response(response)
+
+    def post(self, request):
+        author_id = request.data.get('id')
+        author = get_object_or_404(User, id=author_id)
+
+        if self.request.user != author:
+            Follow.objects.get_or_create(user=request.user, author=author)
+        return Response({'success': True})

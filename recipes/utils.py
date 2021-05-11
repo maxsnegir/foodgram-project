@@ -14,6 +14,7 @@ def get_ingredients(request):
 
 def create_ingredients_for_recipe(recipe, ingredients):
     for ingredient, count in ingredients.items():
+        print(ingredient)
         ing = Ingredient.objects.get_or_create(title=ingredient)[0]
         count = int(count)
         IngredientForRecipe.objects.create(

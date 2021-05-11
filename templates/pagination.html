@@ -3,7 +3,6 @@
         <ul class="pagination__container">
 
             {% if page_obj.has_previous %}
-
                 <li class="pagination__item">
                     <a class="pagination__link link"
                        href="?page={{ page_obj.previous_page_number }}">
@@ -34,6 +33,7 @@
                     </a>
                 </li>
             {% endif %}
+
         </ul>
     </nav>
 {% endif %}

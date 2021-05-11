@@ -1,19 +1,9 @@
 from django import template
 from django.utils.safestring import mark_safe
 
+from users.models import Follow
+
 register = template.Library()
-
-
-@register.filter(is_safe=True)
-def format_style(tag):
-    span = '<span class="badge badge_style_'
-    if tag == 'Завтрак':
-        span += 'orange">'
-    elif tag == 'Обед':
-        span += 'green">'
-    else:
-        span += 'purple">'
-    return mark_safe(span + tag + '</span>')
 
 
 @register.filter
@@ -23,20 +13,42 @@ def add_class(field, css):
 
 @register.filter
 def tag_format_class(tag):
-    value = tag.data.get('value')
+    style = tag.data.get('value').instance.style
     selected = tag.data.get('selected')
 
-    if value == 'BF':
-        attrs = {'id': 'id_breakfast',
-                 'class': 'tags__checkbox tags__checkbox_style_orange',
-                 'checked': selected}
-    elif value == 'LH':
-        attrs = {'id': 'id_lunch',
-                 'class': 'tags__checkbox tags__checkbox_style_green',
-                 'checked': selected}
-    else:
-        attrs = {'id': 'id_dinner',
-                 'class': 'tags__checkbox tags__checkbox_style_purple',
-                 'checked': selected}
+    attrs = {'id': 'id_breakfast',
+             'class': f'tags__checkbox tags__checkbox_style_{style}',
+             'checked': selected
+             }
+
     tag.data['attrs'] = attrs
     return tag
+
+
+@register.filter
+def is_follow(author, user):
+    return Follow.objects.filter(user=user, author=author).exists()
+
+
+@register.filter
+def tags_filter(request, tag):
+    styles = {
+        'BF': 'orange',
+        'LH': 'green',
+        'DR': 'purple'
+    }
+
+    class_ = f'class="tags__checkbox tags__checkbox_style_{styles[tag]}'
+    active = ''
+    url = '?tags='
+    # href = url + tag
+    tags = request.GET.getlist('tags')
+    if tags:
+        print('LH' in tags[0].split(','))
+
+    print(tags)
+    r = request.GET
+    href = r.urlencode()
+
+    a = f'<a id="{tag} class="{class_} {active}" href="?{href}"></a>'
+    return mark_safe(a)
