@@ -1,3 +1,4 @@
+{% load user_filters %}
 {% if is_paginated %}
     <nav class="pagination" aria-label="Search results pages">
         <ul class="pagination__container">
@@ -5,7 +6,7 @@
             {% if page_obj.has_previous %}
                 <li class="pagination__item">
                     <a class="pagination__link link"
-                       href="?page={{ page_obj.previous_page_number }}">
+                       href="?{% add_tags_to_pagination request 'page' i %}">
                         <span class="icon-left"></span>
                     </a>
                 </li>
@@ -15,12 +16,12 @@
                 {% if page_obj.number == i %}
                     <li class="pagination__item pagination__item_active">
                         <a class="pagination__link link"
-                           href="?page={{ i }}">{{ i }}</a>
+                           href="?{% add_tags_to_pagination request 'page' i %}">{{ i }}</a>
                     </li>
                 {% elif i >= page_obj.number|add:-4 and i <= page_obj.number|add:4 %}
                     <li class="pagination__item">
                         <a class="pagination__link link"
-                           href="?page={{ i }}">{{ i }}</a>
+                           href="?{% add_tags_to_pagination request 'page' i %}">{{ i }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
@@ -28,7 +29,7 @@
             {% if page_obj.has_next %}
                 <li class="pagination__item">
                     <a class="pagination__link link"
-                       href="?page={{ page_obj.next_page_number }}">
+                       href="?{% add_tags_to_pagination request 'page' i %}">
                         <span class="icon-right"></span>
                     </a>
                 </li>

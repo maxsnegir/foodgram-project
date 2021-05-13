@@ -6,9 +6,6 @@ router_v1 = DefaultRouter()
 router_v1.register('ingredients', views.IngredientListView,
                    basename='ingredients')
 
-# router_v1.register('subscriptions', views.SubscriptionView,
-#                    basename='subscriptions')
-
 urlpatterns = [
     path('', include(router_v1.urls)),
     path('subscriptions/', views.SubscriptionView.as_view()),

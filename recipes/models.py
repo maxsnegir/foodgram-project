@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-from multiselectfield import MultiSelectField
 
 User = get_user_model()
 
@@ -53,7 +52,7 @@ class Ingredient(models.Model):
 
     class Meta:
         verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
         ordering = ('title',)
 
     def __str__(self):

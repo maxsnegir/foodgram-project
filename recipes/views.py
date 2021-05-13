@@ -4,23 +4,28 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from recipes.forms import RecipeForm
-from recipes.models import Recipe
+from recipes.models import Recipe, Tag
 from .mixins import IsAuthorMixin, FormValidRecipeMixin
 
 User = get_user_model()
 
 
 class RecipeList(generic.ListView):
-    queryset = Recipe.objects.select_related('author').all()
+    queryset = Recipe.objects.select_related('author').prefetch_related('tag')
     template_name = 'recipes/index.html'
     context_object_name = 'recipes'
     paginate_by = 6
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
 
     def get_queryset(self):
         qs = super().get_queryset()
         tags = self.request.GET.getlist('tags')
         if tags:
-            return qs.filter(tag=tags)
+            qs = qs.filter(tag__slug__in=tags)
         return qs
 
 
@@ -71,11 +76,16 @@ class UserRecipes(generic.ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.user.recipes.select_related('author').all()
+        qs = self.user.recipes.select_related('author').prefetch_related('tag')
+        tags = self.request.GET.getlist('tags')
+        if tags:
+            qs = qs.filter(tag__slug__in=tags)
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.user
+        context['author'] = self.user
+        context['tags'] = Tag.objects.all()
         return context
 
 

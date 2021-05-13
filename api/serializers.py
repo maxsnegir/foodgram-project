@@ -7,6 +7,3 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         exclude = ['id', 'draft']
-
-
-

@@ -1,5 +1,6 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+
 from recipes.models import Ingredient
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,17 +26,12 @@ class IngredientListView(generics.ListAPIView, viewsets.ViewSet):
 class SubscriptionView(APIView):
     permission_classes = [IsAuthenticated, ]
 
-    def get_object(self):
-        author_id = self.kwargs.get('pk')
-        return Follow.objects.filter(user=self.request.user, author=author_id)
-
     def delete(self, request, *args, **kwargs):
-        response = {'success': False}
-        relation = self.get_object()
-        if relation:
-            relation.delete()
-            response['success'] = True
-        return Response(response)
+        author_id = self.kwargs.get('pk')
+        relation = Follow.objects.filter(user=self.request.user,
+                                         author=author_id)
+        relation.delete()
+        return Response({'success': True})
 
     def post(self, request):
         author_id = request.data.get('id')

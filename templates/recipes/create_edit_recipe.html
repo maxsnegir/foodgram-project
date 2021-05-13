@@ -119,11 +119,12 @@
                 </div>
                 <div class="form__footer">
                     <button class="button button_style_blue"
-                     {% if not edit %}
-                         name="action"
-                         value="EDIT"
-                     {% endif %}>
-                        Сохранить</button>
+                            {% if not edit %}
+                            name="action"
+                            value="EDIT"
+                            {% endif %}>
+                        Сохранить
+                    </button>
                     {% if edit %}
                         <a style="margin-left: 2.5em"
                            href="{% url 'recipes:recipe_delete' recipe.id %}"
