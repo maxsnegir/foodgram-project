@@ -19,6 +19,13 @@ class Tag(models.Model):
         return self.name
 
 
+class RecipeManager(models.Manager):
+
+    def all_with_tags_and_authors(self):
+        qs = self.get_queryset()
+        return qs.select_related('author').prefetch_related('tag')
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes', verbose_name='Автор', )
@@ -31,6 +38,8 @@ class Recipe(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name='Тег')
     cook_time = models.PositiveIntegerField('Время приготовления', )
     created = models.DateTimeField('Дата добавления', auto_now_add=True)
+
+    objects = RecipeManager()
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -77,3 +86,22 @@ class IngredientForRecipe(models.Model):
 
     def __str__(self):
         return f"{self.recipe.name} {self.ingredient.title}"
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name='Пользователь',
+                             related_name='favorites')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               verbose_name='Рецепт')
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='unique_favorites'),
+        ]
+
+    def __str__(self):
+        return f"{self.user} | {self.recipe}"

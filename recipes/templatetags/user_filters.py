@@ -1,4 +1,5 @@
 from django import template
+
 from users.models import Follow
 
 register = template.Library()
@@ -41,7 +42,7 @@ def tags_links(request, tag, all_tags):
     tags = request.GET.getlist('tags')
     if tags:
         new_request = request.GET.copy()
-        if request.GET.getlist('page'):  # Удаляем page
+        if request.GET.getlist('page'):  # При выборе нового tag - удаляем page
             new_request.pop('page')
         if tag.slug in tags:
             tags.remove(tag.slug)
@@ -52,7 +53,7 @@ def tags_links(request, tag, all_tags):
     # Если в запросе нет тегов
     result = []
     for t in all_tags:
-        if t != tag:  # Выводить все кроме текущего
+        if t != tag:  # Выводить все, кроме текущего
             result.append('tags=' + t.slug)
 
     return '&'.join(result)

@@ -1,7 +1,6 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
-
-from recipes.models import Ingredient
+from recipes.models import Ingredient, Favorite, Recipe
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
@@ -39,4 +38,21 @@ class SubscriptionView(APIView):
 
         if self.request.user != author:
             Follow.objects.get_or_create(user=request.user, author=author)
+        return Response({'success': True})
+
+
+class FavoriteView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request):
+        recipe = get_object_or_404(Recipe, id=request.data.get('id'))
+        Favorite.objects.get_or_create(user=self.request.user,
+                                       recipe=recipe)
+        return Response({'success': True})
+
+    def delete(self, request, *args, **kwargs):
+        recipe_id = kwargs.get('pk')
+        relation = Favorite.objects.filter(user=self.request.user,
+                                           recipe=recipe_id)
+        relation.delete()
         return Response({'success': True})

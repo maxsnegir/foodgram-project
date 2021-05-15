@@ -6,6 +6,8 @@ app_name = 'recipes'
 urlpatterns = [
     path('subscriptions/', views.SubscriptionsList.as_view(),
          name='subscriptions'),
+    path('favorites/', views.FavoritesList.as_view(),
+         name='favorites'),
     path('create-recipe/', views.RecipeCreate.as_view(), name='create-recipe'),
     path('create-recipe/<int:pk>', views.RecipeUpdate.as_view(),
          name='update-recipe'),

@@ -20,11 +20,7 @@
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.name }}</h1>
                     <div class="single-card__favorite">
-                        <button class="button button_style_none"
-                                name="favorites"
-                                data-out><span
-                                class="icon-favorite icon-favorite_big"></span>
-                        </button>
+                        {% include 'includes/favorite_button.html' %}
                         <div class="single-card__favorite-tooltip tooltip">
                             Добавить в избранное
                         </div>

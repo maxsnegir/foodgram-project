@@ -8,6 +8,8 @@ router_v1.register('ingredients', views.IngredientListView,
 
 urlpatterns = [
     path('', include(router_v1.urls)),
+    path('favorites/', views.FavoriteView.as_view()),
+    path('favorites/<int:pk>/', views.FavoriteView.as_view()),
     path('subscriptions/', views.SubscriptionView.as_view()),
     path('subscriptions/<int:pk>/', views.SubscriptionView.as_view())
 

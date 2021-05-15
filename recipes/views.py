@@ -4,14 +4,15 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from recipes.forms import RecipeForm
-from recipes.models import Recipe, Tag
+from recipes.models import Recipe, Tag, Favorite
 from .mixins import IsAuthorMixin, FormValidRecipeMixin
+from django.db.models import Exists, OuterRef
 
 User = get_user_model()
 
 
 class RecipeList(generic.ListView):
-    queryset = Recipe.objects.select_related('author').prefetch_related('tag')
+    queryset = Recipe.objects.all_with_tags_and_authors()
     template_name = 'recipes/index.html'
     context_object_name = 'recipes'
     paginate_by = 6
@@ -23,6 +24,10 @@ class RecipeList(generic.ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        if self.request.user.is_authenticated:
+            qs = qs.annotate(is_favorite=Exists(Favorite.objects.filter(
+                recipe_id=OuterRef('pk'), user=self.request.user)))
+
         tags = self.request.GET.getlist('tags')
         if tags:
             qs = qs.filter(tag__slug__in=tags)
@@ -35,6 +40,13 @@ class RecipeDetail(generic.DetailView):
     context_object_name = 'recipe'
     queryset = Recipe.objects.select_related('author'). \
         prefetch_related('get_ingredients__ingredient')
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.user.is_authenticated:
+            return qs.annotate(is_favorite=Exists(Favorite.objects.filter(
+                recipe_id=OuterRef('pk'), user=self.request.user)))
+        return qs
 
 
 class RecipeCreate(LoginRequiredMixin, FormValidRecipeMixin,
@@ -65,10 +77,8 @@ class RecipeDelete(LoginRequiredMixin, IsAuthorMixin, generic.DeleteView):
     success_url = reverse_lazy('recipes:recipes')
 
 
-class UserRecipes(generic.ListView):
+class UserRecipes(RecipeList):
     template_name = 'recipes/user_recipes.html'
-    context_object_name = 'recipes'
-    paginate_by = 6
 
     def get(self, request, *args, **kwargs):
         username = self.kwargs.get('username')
@@ -76,7 +86,10 @@ class UserRecipes(generic.ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.user.recipes.select_related('author').prefetch_related('tag')
+        qs = self.user.recipes.all_with_tags_and_authors().annotate(
+            is_favorite=Exists(Favorite.objects.filter(user=self.user,
+                                                       recipe_id=OuterRef('pk')
+                                                       )))
         tags = self.request.GET.getlist('tags')
         if tags:
             qs = qs.filter(tag__slug__in=tags)
@@ -85,7 +98,6 @@ class UserRecipes(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['author'] = self.user
-        context['tags'] = Tag.objects.all()
         return context
 
 
@@ -96,4 +108,22 @@ class SubscriptionsList(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return user.follower.all()
+        return user.follower.all().select_related('author')
+
+
+class FavoritesList(LoginRequiredMixin, RecipeList):
+    template_name = 'recipes/favorites.html'
+
+    def get_queryset(self):
+        qs = Recipe.objects.all_with_tags_and_authors().filter(
+            favorite__user=self.request.user)
+
+        tags = self.request.GET.getlist('tags')
+        if tags:
+            qs = qs.filter(tag__slug__in=tags)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['favorite_page'] = True
+        return context
