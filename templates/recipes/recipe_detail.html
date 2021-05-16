@@ -62,11 +62,20 @@
                 {% if user.is_authenticated %}
                     <ul class="single-card__items">
                         <li class="single-card__item">
-                            <button class="button button_style_blue"
-                                    name="purchases"
-                                    data-out><span class="icon-plus"></span>
-                                Добавить в покупки
-                            </button>
+                            {% if recipe.in_list %}
+                                <button class="button button_style_light-blue-outline"
+                                        name="purchases"><span
+                                        class="icon-check button__icon"></span>
+                                    Рецепт добавлен
+                                </button>
+                            {% else %}
+                                <button class="button button_style_blue"
+                                        name="purchases"
+                                        data-out><span
+                                        class="icon-plus"></span>
+                                    Добавить в покупки
+                                </button>
+                            {% endif %}
                         </li>
 
                         {% if user != recipe.author %}

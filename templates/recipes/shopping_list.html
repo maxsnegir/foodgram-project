@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Список покупок{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="../../static/pages/shopList.css">
+{% endblock %}
+
+{% block content %}
+
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">Список покупок</h1>
+        </div>
+        <div class="card-list card-list_column">
+            <ul class="shopping-list">
+                {% for recipe in recipes %}
+
+                    <li class="shopping-list__item" data-id="{{ recipe.id }}">
+                        <div class="recipe recipe_reverse">
+                            <img src="{{ recipe.image.url }}"
+                                 alt="какой-то текст"
+                                 class="recipe__image recipe__image_big">
+
+                            <a href="{{ recipe.get_absolute_url }}"><h3 class="recipe__title">{{ recipe.name }}</h3></a>
+                            <p class="recipe__text"><span
+                                    class="icon-time"></span>
+                                {{ recipe.cook_time }} мин.</p>
+                        </div>
+                        <a href="{% url 'recipes:shopping_list_delete' recipe.id %}"
+                           class="shopping-list__button link">Удалить</a>
+                    </li>
+                {% empty %}
+                    <h3 class="main__title">
+                        Вы не добавили ни одного рецепта в список покупок
+                    </h3>
+                {% endfor %}
+            </ul>
+            {% if recipes %}
+                <a href="{% url 'recipes:shopping_list_download' %}">
+                    <button class="button button_style_blue">Скачать список
+                    </button>
+                </a>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}
+
+{% block js %}
+    <script src="../../static/js/config/config.js"></script>
+    <script src="../../static/js/components/Header.js"></script>
+    <script src="../../static/js/components/ShopList.js"></script>
+    <script src="../../static/js/api/Api.js"></script>
+    <script src="../../static/js/shopList.js"></script>
+{% endblock %}

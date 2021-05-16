@@ -3,6 +3,7 @@ from django.contrib import admin
 from recipes.models import *
 
 admin.site.register(Favorite)
+admin.site.register(ShoppingList)
 
 
 @admin.register(Tag)

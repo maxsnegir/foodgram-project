@@ -1,6 +1,8 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
-from recipes.models import Ingredient, Favorite, Recipe
+
+from recipes.shop_list import ShopListSession
+from recipes.models import Ingredient, Favorite, Recipe, ShoppingList
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
@@ -55,4 +57,28 @@ class FavoriteView(APIView):
         relation = Favorite.objects.filter(user=self.request.user,
                                            recipe=recipe_id)
         relation.delete()
+        return Response({'success': True})
+
+
+class ShoppingListView(APIView):
+
+    def post(self, request):
+        recipe_id = request.data.get('id')
+        if request.user.is_authenticated:
+            ShoppingList.objects.get_or_create(user=self.request.user,
+                                               recipe_id=recipe_id)
+        else:
+            shop_list = ShopListSession(request)
+            shop_list.add(recipe_id)
+        return Response({'success': True})
+
+    def delete(self, request, *args, **kwargs):
+        recipe_id = kwargs.get('pk')
+        if request.user.is_authenticated:
+            relation = ShoppingList.objects.filter(user=self.request.user,
+                                                   recipe=recipe_id)
+            relation.delete()
+        else:
+            shop_list = ShopListSession(request)
+            shop_list.remove(str(recipe_id))
         return Response({'success': True})

@@ -25,15 +25,24 @@
             </p>
         </div>
     </div>
-    {% if user.is_authenticated %}
-        <div class="card__footer">
+
+    <div class="card__footer">
+        {% if recipe.in_list or recipe.id in shop_list %}
+            <button class="button button_style_light-blue-outline"
+                    name="purchases"><span
+                    class="icon-check button__icon"></span>
+                Рецепт добавлен
+            </button>
+        {% else %}
             <button class="button button_style_light-blue"
                     name="purchases" data-out><span
-                    class="icon-plus button__icon"></span>Добавить в покупки
+                    class="icon-plus button__icon"></span>
+                Добавить в покупки
             </button>
 
+        {% endif %}
+        {% if user.is_authenticated %}
             {% include 'includes/favorite_button.html' %}
-
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>

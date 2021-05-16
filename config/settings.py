@@ -59,6 +59,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'recipes.context_processors.recipes_count'
             ],
         },
     },
@@ -117,14 +118,14 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'recipes:recipes'
 LOGOUT_REDIRECT_URL = 'recipes:recipes'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+SHOP_LIST_SESSION_ID = 'shopping_list'

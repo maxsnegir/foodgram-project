@@ -23,10 +23,10 @@
                     </a>
                 </li>
                 <li class="nav__item">
-                    <a href="#" class="nav__link link">Список
-                        покупок</a>
+                    <a href="{% url 'recipes:shopping_list' %}"
+                       class="nav__link link">Список покупок</a>
                     <span class="badge badge_style_blue nav__badge"
-                          id="counter">4</span></li>
+                          id="counter">{{ recipes_in_list }}</span></li>
 
             </ul>
             <ul class="nav__items list">
@@ -38,14 +38,18 @@
             </ul>
         {% else %}
             <ul class="nav__items list">
-                <li class="nav__item nav__item_active"><a
-                        href="{% url "recipes:recipes" %}"
-                        class="nav__link link">Рецепты</a>
+                <li class="nav__item nav__item_active">
+                    <a href="{% url "recipes:recipes" %}"
+                       class="nav__link link">Рецепты
+                    </a>
                 </li>
-                <li class="nav__item nav__item_disabled"><a href="#"
-                                                            class="nav__link link">Список
-                    покупок <span class="badge badge_style_blue nav__badge"
-                                  id="counter">4</span></a></li>
+                <li class="nav__item">
+                    <a href="{% url 'recipes:shopping_list' %}"
+                       class="nav__link link">Список покупок
+                        <span class="badge badge_style_blue nav__badge"
+                              id="counter">{{ recipes_in_list }}</span>
+                    </a>
+                </li>
             </ul>
             <ul class="nav__items list">
                 <li class="nav__item"><a href="{% url 'login' %}"

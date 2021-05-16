@@ -91,7 +91,7 @@ class IngredientForRecipe(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='Пользователь',
-                             related_name='favorites')
+                             )
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт')
 
@@ -101,6 +101,24 @@ class Favorite(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='unique_favorites'),
+        ]
+
+    def __str__(self):
+        return f"{self.user} | {self.recipe}"
+
+
+class ShoppingList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name='Пользователь')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               verbose_name='Рецепт')
+
+    class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='unique_recipe'),
         ]
 
     def __str__(self):
