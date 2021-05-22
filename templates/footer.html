@@ -1,11 +1,17 @@
+{% load flatpages %}
+{% get_flatpages as flatpages %}
+
 <footer class="footer">
     <div class="footer__container container">
-        <a href="#" class="footer__brand link">Продуктовый помощник</a>
+        <a href="{% url 'recipes:recipes' %}" class="footer__brand link">Продуктовый
+            помощник</a>
         <ul class="footer__items">
-            <li class="footer__item"><a href="#" class="footer__link link">Об
-                авторе </a></li>
-            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a>
-            </li>
+            {% for page in flatpages %}
+                <li class="footer__item">
+                    <a href="{{ page.url }}"
+                       class="footer__link link">{{ page.title }}</a>
+                </li>
+            {% endfor %}
         </ul>
     </div>
 </footer>

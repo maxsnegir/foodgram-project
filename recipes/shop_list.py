@@ -19,7 +19,6 @@ class ShopListSession:
         self.session.modified = True
 
     def remove(self, recipe_id):
-
         if recipe_id in self.sl:
             del self.sl[recipe_id]
             self.save()

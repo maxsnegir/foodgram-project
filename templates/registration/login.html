@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load user_filters %}
+{% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block css %}
-    <link rel="stylesheet" href="../../static/pages/form.css">
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
 {% endblock %}
 {% block content %}
 

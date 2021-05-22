@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Список покупок{% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="../../static/pages/shopList.css">
+    <link rel="stylesheet" href="{% static 'pages/shopList.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,9 @@
                                  alt="какой-то текст"
                                  class="recipe__image recipe__image_big">
 
-                            <a href="{{ recipe.get_absolute_url }}"><h3 class="recipe__title">{{ recipe.name }}</h3></a>
+                            <a href="{{ recipe.get_absolute_url }}"><h3
+                                    class="recipe__title">{{ recipe.name }}</h3>
+                            </a>
                             <p class="recipe__text"><span
                                     class="icon-time"></span>
                                 {{ recipe.cook_time }} мин.</p>
@@ -47,9 +49,9 @@
 {% endblock %}
 
 {% block js %}
-    <script src="../../static/js/config/config.js"></script>
-    <script src="../../static/js/components/Header.js"></script>
-    <script src="../../static/js/components/ShopList.js"></script>
-    <script src="../../static/js/api/Api.js"></script>
-    <script src="../../static/js/shopList.js"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/ShopList.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/shopList.js' %}"></script>
 {% endblock %}

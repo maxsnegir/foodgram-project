@@ -4,7 +4,7 @@
 {% block title %}Мои подписки{% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="../../static/pages/myFollow.css">
+    <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -77,13 +77,13 @@
 
 
 {% block js %}
-    <script src="../../static/js/config/config.js"></script>
-    <script src="../../static/js/components/MainCards.js"></script>
-    <script src="../../static/js/components/MyFollow.js"></script>
-    <script src="../../static/js/components/Subscribe.js"></script>
-    <script src="../../static/js/components/Header.js"></script>
-    <script src="../../static/js/api/Api.js"></script>
-    <script src="../../static/js/myFollow.js"></script>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/MyFollow.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/myFollow.js' %}"></script>
 {% endblock %}
 
 

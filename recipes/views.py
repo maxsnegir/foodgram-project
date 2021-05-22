@@ -1,9 +1,10 @@
-from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect, reverse
-from django.urls import reverse_lazy
-from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, reverse, render
+from django.urls import reverse_lazy
+from django.views import generic
+
 from recipes.forms import RecipeForm
 from recipes.models import Recipe, Tag, ShoppingList
 from .mixins import IsAuthorMixin, FormValidRecipeMixin
@@ -161,3 +162,11 @@ def shop_list_export_to_pdf(request):
                             content_type='application/text charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="ShoppingList.txt"'
     return response
+
+
+def page_not_found(request, exception):
+    return render(request, "misc/404.html", {"path": request.path}, status=404)
+
+
+def server_error(request):
+    return render(request, "misc/500.html", status=500)
