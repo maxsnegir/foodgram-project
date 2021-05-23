@@ -64,7 +64,8 @@ jobs:
           echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
           echo EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} >> .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-      -name: Copy file via ssh password
+
+      - name: Copy file via ssh password
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
