@@ -47,7 +47,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     needs: build_and_push_to_docker_hub
     steps:
-      - Check out the repo
+      - name: Check out the repo
         uses: actions/checkout@v2
       - name: Add environment variables to .env
         run: |
