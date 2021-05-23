@@ -27,6 +27,10 @@
                 {% endfor %}
             </ul>
         </div>
+        {% if author_page %}
+            {% include 'includes/subscribe_button_for_author_page.html' %}
+        {% endif %}
+
         <div class="card-list">
             {% for recipe in recipes %}
                 {% include 'recipes/recipe.html' %}

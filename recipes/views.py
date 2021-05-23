@@ -96,6 +96,7 @@ class UserRecipes(RecipeList):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['author'] = self.user
+        context['author_page'] = True
         return context
 
 
