@@ -47,6 +47,33 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     needs: build_and_push_to_docker_hub
     steps:
+      - Check out the repo
+        uses: actions/checkout@v2
+      - name: Add environment variables to .env
+        run: |
+          echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+
+          echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
+          echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
+          echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
+          echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
+          echo EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} >> .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+      -name: Copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: ".env,docker-compose.yaml,nginx/default.conf"
+          target: "foodgram-project"
+
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -55,22 +82,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            touch .env 
-            # Наполнит файл переменными окружения из секретов GitHub
-            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-
-            echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
-            echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
-            echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
-            echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
-            echo EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} >> .env
-            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            
             sudo docker pull maxsnegir/foodgram
             sudo docker stop $(sudo docker ps -a -q)
             sudo docker-compose -f foodgram-project/docker-compose.yaml up -d --build
