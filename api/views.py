@@ -1,15 +1,15 @@
-from rest_framework import generics, viewsets
-from rest_framework.permissions import IsAuthenticated
-
-from recipes.shop_list import ShopListSession
-from recipes.models import Ingredient, Favorite, Recipe, ShoppingList
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django_filters import rest_framework as filters
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
+from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from api.filters import IngredientFilter
 from api.serializers import IngredientSerializer
+from recipes.models import Ingredient, Favorite, Recipe, ShoppingList
+from recipes.shop_list import ShopListSession
 from users.models import Follow
 
 User = get_user_model()

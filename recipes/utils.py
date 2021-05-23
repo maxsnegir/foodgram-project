@@ -1,7 +1,8 @@
-from recipes.models import Ingredient, IngredientForRecipe, Favorite, \
-    ShoppingList
 from django.db.models import Exists, OuterRef
 from django.db.models import Sum
+
+from recipes.models import Ingredient, IngredientForRecipe, Favorite, \
+    ShoppingList
 
 
 def get_ingredients(request):

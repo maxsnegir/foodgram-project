@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import redirect
 from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import redirect
 
 from recipes.utils import get_ingredients, create_ingredients_for_recipe
 
