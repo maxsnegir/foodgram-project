@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse, render
 from django.urls import reverse_lazy
 from django.views import generic
 
+from config.settings import PAGINATE_COUNT
 from recipes.forms import RecipeForm
 from recipes.models import Recipe, Tag, ShoppingList
 from .mixins import IsAuthorMixin, FormValidRecipeMixin
@@ -19,7 +20,7 @@ class RecipeList(generic.ListView):
     queryset = Recipe.objects.all_with_tags_and_authors()
     template_name = 'recipes/index.html'
     context_object_name = 'recipes'
-    paginate_by = 6
+    paginate_by = PAGINATE_COUNT
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -103,7 +104,7 @@ class UserRecipes(RecipeList):
 class SubscriptionsList(LoginRequiredMixin, generic.ListView):
     context_object_name = 'subscriptions'
     template_name = 'recipes/subscriptions.html'
-    paginate_by = 6
+    paginate_by = PAGINATE_COUNT
 
     def get_queryset(self):
         user = self.request.user

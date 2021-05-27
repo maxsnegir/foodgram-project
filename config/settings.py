@@ -145,6 +145,9 @@ INTERNAL_IPS = [
 
 SITE_ID = 1
 
+
+PAGINATE_COUNT = 6
+
 # Session
 SHOP_LIST_SESSION_ID = 'shopping_list'
 

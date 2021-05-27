@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator as MinValue
 from django.db import models
 from django.urls import reverse
 
@@ -35,7 +36,9 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField('Ingredient',
                                          through='IngredientForRecipe', )
     tag = models.ManyToManyField(Tag, verbose_name='Тег')
-    cook_time = models.PositiveIntegerField('Время приготовления', )
+    cook_time = models.PositiveIntegerField(
+        validators=[MinValue(0, 'Время приготвления не может быть  0'), ],
+        verbose_name='Время приготовления')
     created = models.DateTimeField('Дата добавления', auto_now_add=True)
 
     objects = RecipeManager()
@@ -73,7 +76,9 @@ class IngredientForRecipe(models.Model):
                                related_name='get_ingredients')
     ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE, )
-    count = models.PositiveIntegerField('Количество')
+    count = models.PositiveIntegerField(
+        validators=[MinValue(0, 'Время приготвления не может быть  0'), ],
+        verbose_name='Количество')
 
     class Meta:
         verbose_name = 'Ингредиент для рецетов'

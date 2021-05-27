@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.filters import IngredientFilter
@@ -24,6 +24,14 @@ class IngredientListView(generics.ListAPIView, viewsets.ViewSet):
     filterset_class = IngredientFilter
 
 
+def delete_relation(relation):
+    status = {'success': False}
+    if relation:
+        relation.delete()
+        status['success'] = True
+    return status
+
+
 class SubscriptionView(APIView):
     permission_classes = [IsAuthenticated, ]
 
@@ -31,16 +39,15 @@ class SubscriptionView(APIView):
         author_id = self.kwargs.get('pk')
         relation = Follow.objects.filter(user=self.request.user,
                                          author=author_id)
-        relation.delete()
-        return Response({'success': True})
+        status = delete_relation(relation)
+        return JsonResponse(status)
 
     def post(self, request):
         author_id = request.data.get('id')
         author = get_object_or_404(User, id=author_id)
-
-        if self.request.user != author:
-            Follow.objects.get_or_create(user=request.user, author=author)
-        return Response({'success': True})
+        _, created = Follow.objects.get_or_create(user=request.user,
+                                                  author=author)
+        return JsonResponse({'success': created})
 
 
 class FavoriteView(APIView):
@@ -48,16 +55,16 @@ class FavoriteView(APIView):
 
     def post(self, request):
         recipe = get_object_or_404(Recipe, id=request.data.get('id'))
-        Favorite.objects.get_or_create(user=self.request.user,
-                                       recipe=recipe)
-        return Response({'success': True})
+        _, created = Favorite.objects.get_or_create(user=self.request.user,
+                                                    recipe=recipe)
+        return JsonResponse({'success': created})
 
     def delete(self, request, *args, **kwargs):
         recipe_id = kwargs.get('pk')
         relation = Favorite.objects.filter(user=self.request.user,
                                            recipe=recipe_id)
-        relation.delete()
-        return Response({'success': True})
+        status = delete_relation(relation)
+        return JsonResponse(status)
 
 
 class ShoppingListView(APIView):
@@ -70,15 +77,16 @@ class ShoppingListView(APIView):
         else:
             shop_list = ShopListSession(request)
             shop_list.add(recipe_id)
-        return Response({'success': True})
+        return JsonResponse({'success': True})
 
     def delete(self, request, *args, **kwargs):
+        status = {'success': True}
         recipe_id = kwargs.get('pk')
         if request.user.is_authenticated:
             relation = ShoppingList.objects.filter(user=self.request.user,
                                                    recipe=recipe_id)
-            relation.delete()
+            status = delete_relation(relation)
         else:
             shop_list = ShopListSession(request)
             shop_list.remove(str(recipe_id))
-        return Response({'success': True})
+        return JsonResponse(status)

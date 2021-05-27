@@ -65,3 +65,20 @@ def add_tags_to_pagination(request, param, value):
     new_request[param] = value
 
     return new_request.urlencode()
+
+
+@register.filter
+def format_count(word, count):
+    count = count - 3
+
+    remainder_ten = count % 10
+    remainder_hundred = count % 100
+    if remainder_ten == 0:
+        word += 'ов'
+    elif remainder_ten == 1 and remainder_hundred != 11:
+        word += ''
+    elif remainder_ten < 5 and remainder_hundred not in [11, 12, 13, 14]:
+        word += 'а'
+    else:
+        word += 'ов'
+    return word

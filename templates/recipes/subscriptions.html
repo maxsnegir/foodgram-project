@@ -52,7 +52,7 @@
                                                 <a href="{% url 'recipes:user_recipes' recipe.author %}"
                                                    class="card-user__link link">Еще
                                                     {{ count|add:-3 }}
-                                                    рецептов...</a>
+                                                    {{ 'рецепт'|format_count:follow.author.recipes.count }}...</a>
                                             </li>
                                         {% endif %}
                                     {% endwith %}
