@@ -37,7 +37,7 @@ class Recipe(models.Model):
                                          through='IngredientForRecipe', )
     tag = models.ManyToManyField(Tag, verbose_name='Тег')
     cook_time = models.PositiveIntegerField(
-        validators=[MinValue(0, 'Время приготвления не может быть  0'), ],
+        validators=[MinValue(1, 'Время приготвления не может быть  0'), ],
         verbose_name='Время приготовления')
     created = models.DateTimeField('Дата добавления', auto_now_add=True)
 
@@ -77,7 +77,7 @@ class IngredientForRecipe(models.Model):
     ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE, )
     count = models.PositiveIntegerField(
-        validators=[MinValue(0, 'Время приготвления не может быть  0'), ],
+        validators=[MinValue(1, 'Время приготвления не может быть  0'), ],
         verbose_name='Количество')
 
     class Meta:

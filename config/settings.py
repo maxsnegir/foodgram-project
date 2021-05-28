@@ -145,7 +145,6 @@ INTERNAL_IPS = [
 
 SITE_ID = 1
 
-
 PAGINATE_COUNT = 6
 
 # Session
