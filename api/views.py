@@ -54,7 +54,7 @@ class SubscriptionView(BaseView):
     field = 'author_id'
 
 
-class FavoriteView(APIView):
+class FavoriteView(BaseView):
     model = Favorite
     field = 'recipe'
 
